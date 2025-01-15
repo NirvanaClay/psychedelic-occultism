@@ -1,0 +1,46 @@
+.tree-element {
+  padding: 1rem;
+  margin: 0.5rem;
+  font-family: 'Arial', sans-serif;
+}
+
+.tree-element h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  text-transform: capitalize;
+  margin-bottom: 0.5rem;
+}
+
+.tree-element h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.tree-element p {
+  max-width: 100%;
+  height: auto;
+  margin: 0.5rem 0;
+}
+
+.tree-element__connections {
+  margin-top: 1rem;
+}
+
+.tree-element__connections h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+.tree-element__connections ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tree-element__connections ul .tree-element__connection {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0.25rem 0;
+}
+/*# sourceMappingURL=treeElement.css.map */

@@ -1,0 +1,19 @@
+#experiences {
+  margin-top: 10px;
+}
+
+#experiences h3 {
+  text-align: center;
+}
+
+#experiences ul {
+  margin: auto;
+  padding-left: 0;
+  list-style: none;
+  text-align: center;
+}
+
+#experiences ul h4 {
+  text-align: center;
+}
+/*# sourceMappingURL=experiences.css.map */

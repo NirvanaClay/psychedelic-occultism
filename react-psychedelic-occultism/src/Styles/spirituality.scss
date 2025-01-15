@@ -1,0 +1,48 @@
+.spirituality{
+  margin-top: 10px;
+  h1{
+    text-align: center;
+  }
+  h2{
+    text-align: center;
+  }
+  p{
+    text-align: center;
+  }
+  ul{
+    margin: auto;
+    padding-left: 0;
+    list-style: none;
+    text-align: center;
+    h4{
+      text-align: center;
+    }
+  }
+  .summaries, .ideaExplore {
+  margin: 20px 0;
+  padding: 20px;
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        margin-bottom: 10px;
+
+        a {
+          text-decoration: none;
+          color: #007BFF;
+          font-weight: bold;
+          transition: color 0.3s ease;
+
+          &:hover {
+            color: #0056b3;
+          }
+        }
+      }
+    }
+  }
+}
