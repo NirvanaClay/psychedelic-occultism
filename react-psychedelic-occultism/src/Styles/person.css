@@ -1,0 +1,35 @@
+.person {
+  text-align: center;
+}
+
+.person h1 {
+  margin: 0.5em 0;
+  font-size: 1.5em;
+}
+
+.person img {
+  width: 150px;
+  height: auto;
+  margin: 1em 0;
+}
+
+.person p {
+  font-size: 1em;
+  margin: 0.5em 0;
+}
+
+.person h2 {
+  margin: 1.5em 0 0.5em;
+  font-size: 1.2em;
+}
+
+.person ul {
+  list-style: none;
+  padding: 0;
+}
+
+.person ul li {
+  margin: 0.5em 0;
+  font-size: 1em;
+}
+/*# sourceMappingURL=person.css.map */

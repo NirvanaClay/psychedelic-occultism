@@ -3,21 +3,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
+import { useAuth } from "../Hooks/useAuth";
+
 import '../Styles/login.css';
 
-const LoginForm = ({ setIsLoggedIn }) => {
+const LoginForm = ({ setIsLoggedIn, user, setUser }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate()
+  // const { setUser, getUserFromToken } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post('http://localhost:3001/api/auth/login', { username, password });
-      localStorage.setItem('token', res.data.token);
+      console.log('Login response:', res.data);
+      const token = res.data.token
+      localStorage.setItem('token', token);
+      const decodedUser = jwtDecode(token);
+      setUser(decodedUser);
       setIsLoggedIn(true);
       setErrorMessage(''); // Clear any previous errors
       navigate('/');

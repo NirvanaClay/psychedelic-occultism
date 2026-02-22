@@ -1,20 +1,6 @@
 const mongoose = require('mongoose');
-const Technique = require('../models/Technique'); // Adjust path to your model
-
-const seedData = [
-  {
-    name: 'meditation',
-    description: 'Meditation is the practice of focusing the mind and achieving a state of relaxation or heightened awareness.'
-  },
-  {
-    name: 'manifestation',
-    description: 'Manifestation is the process of bringing desires and goals into reality through focused intention and belief.'
-  },
-  {
-    name: 'tarot',
-    description: 'Tarot is a divination technique that uses a deck of symbolic cards to gain insights and guidance.'
-  }
-];
+const Technique = require('../models/Technique');
+const techniqueData = require('../data/techniqueData')
 
 const seedDatabase = async () => {
   try {
@@ -27,7 +13,7 @@ const seedDatabase = async () => {
     console.log('Cleared existing Techniques');
 
     // Insert seed data
-    const createdTechniques = await Technique.insertMany(seedData);
+    const createdTechniques = await Technique.insertMany(techniqueData);
     console.log(`Seeded ${createdTechniques.length} Techniques`);
 
     mongoose.connection.close();

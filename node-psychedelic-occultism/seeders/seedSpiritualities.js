@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Spirituality = require('../models/Spirituality');
-const spiritualities = require('../data/spiritualityData');
+const spiritualityData = require('../data/spiritualityData');
 
 console.log("Seeder script started1")
 
@@ -15,7 +15,7 @@ async function seedSpiritualities() {
     await Spirituality.deleteMany({});
     console.log('Cleared existing Spirituality collection');
 
-    await Spirituality.insertMany(spiritualities);
+    await Spirituality.insertMany(spiritualityData);
     console.log('Inserted spiritualities into the database');
 
     await mongoose.disconnect();

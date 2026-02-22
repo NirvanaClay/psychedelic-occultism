@@ -1,28 +1,93 @@
-const quotes = {
-  Christianity: [
-    '1Chr Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    '2Chr Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    '3Chr Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
-    '4Chr Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.',
-    '5Chr Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.',
-    '6Chr Mollit anim id est laborum.',
-  ],
-  'Eastern Spirituality': [
-    '1Est Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    '2Est Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    '3Est Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
-    '4Est Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.',
-    '5Est Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.',
-    '6Est Mollit anim id est laborum.',
-  ],
-  Occultism: [
-    '1Occ Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    '2Occ Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    '3Occ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
-    '4Occ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.',
-    '5Occ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.',
-    '6Occ Mollit anim id est laborum.',
-  ],
-};
+const quoteData = [
+  // Aleister Crowley
+  {
+    text: "Do what thou wilt shall be the whole of the Law.",
+    personSlug: 'aleister-crowley', // Use slug instead of ID
+    sourceSlug: 'the-book-of-the-law', // Use slug instead of ID
+    spiritualitySlug: ['occultism'],
+    likes: 0,
+    likedBy: [],
+  },
+  {
+    text: "Every man and every woman is a star.",
+    personSlug: 'aleister-crowley',
+    sourceSlug: 'magick-without-tears',
+    spiritualitySlug: ['occultism'],
+    likes: 0,
+    likedBy: [],
+  },
 
-module.exports = quotes;
+  // Terence McKenna
+  {
+    text: "Nature loves courage. You make the commitment, and nature will respond to that commitment by removing impossible obstacles.",
+    personSlug: 'terence-mckenna',
+    sourceSlug: 'food-of-the-gods',
+    spiritualitySlug: ['psychedelics'],
+    likes: 0,
+    likedBy: [],
+  },
+  {
+    text: "The imagination is the goal of history. I see culture as an effort to literally realize our collective dreams.",
+    personSlug: 'terence-mckenna',
+    sourceSlug: 'true-hallucinations',
+    spiritualitySlug: ['psychedelics'],
+    likes: 0,
+    likedBy: [],
+  },
+
+  // Timothy Leary
+  {
+    text: "Turn on, tune in, drop out.",
+    personSlug: 'timothy-leary',
+    sourceSlug: 'the-psychedelic-experience',
+    spiritualitySlug: ['psychedelics'],
+    likes: 0,
+    likedBy: [],
+  },
+  {
+    text: "You can be anything you want to be. This is the message of psychedelics.",
+    personSlug: 'timothy-leary',
+    sourceSlug: 'politics-of-ecstasy',
+    spiritualitySlug: ['psychedelics'],
+    likes: 0,
+    likedBy: [],
+  },
+
+  // Alan Watts
+  {
+    text: "You are the universe experiencing itself.",
+    personSlug: 'alan-watts',
+    sourceSlug: 'the-book-on-the-taboo-against-knowing-who-you-are',
+    spiritualitySlug: ['eastern-spirituality'],
+    likes: 0,
+    likedBy: [],
+  },
+  {
+    text: "Muddy water is best cleared by leaving it alone.",
+    personSlug: 'alan-watts',
+    sourceSlug: 'the-wisdom-of-insecurity',
+    spiritualitySlug: ['eastern-spirituality'],
+    likes: 0,
+    likedBy: [],
+  },
+
+  // John Lilly
+  {
+    text: "In the province of the mind, what one believes to be true either is true or becomes true.",
+    personSlug: 'john-lilly',
+    sourceSlug: 'programming-and-metaprogramming-in-the-human-biocomputer',
+    spiritualitySlug: ['psychedelics'],
+    likes: 0,
+    likedBy: [],
+  },
+  {
+    text: "All realities are a result of imagination.",
+    personSlug: 'john-lilly',
+    sourceSlug: 'center-of-the-cyclone',
+    spiritualitySlug: ['psychedelics'],
+    likes: 0,
+    likedBy: [],
+  },
+];
+
+module.exports = quoteData;

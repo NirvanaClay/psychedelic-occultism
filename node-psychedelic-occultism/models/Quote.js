@@ -14,10 +14,10 @@ const QuoteSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Source',
   },
-  spirituality: {
+  spirituality: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Spirituality',
-  },
+  }],
   likes: { type: Number, default: 0 },
   likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 });

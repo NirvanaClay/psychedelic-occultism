@@ -1,0 +1,30 @@
+#book {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  // background-color: #f9f9f9;
+  // border: 1px solid #ddd;
+  // border-radius: 8px;
+  max-width: 600px;
+  margin: 20px auto;
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  img {
+    width: 150px;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.6;
+    text-align: justify;
+  }
+}

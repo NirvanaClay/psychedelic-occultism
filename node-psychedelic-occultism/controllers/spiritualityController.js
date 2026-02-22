@@ -8,6 +8,7 @@ const Quote = require('../models/Quote')
 const Summary = require('../models/Summary')
 const IdeaExploration = require('../models/IdeaExploration')
 const Source = require('../models/Source')
+const Person = require('../models/Person')
 const Tag = require('../models/Tag')
 
 const { authenticateToken } = require('../middleware/authMiddleware');
@@ -36,7 +37,9 @@ router.get('/:id', async (req, res) => {
 router.get('/:id/quotes', async (req, res) => {
     const spiritualityId = req.params.id;
     try {
-        const quotes = await Quote.find({ spirituality: spiritualityId });
+        const quotes = await Quote.find({ spirituality: spiritualityId })
+        .populate('person');
+        
         if (quotes.length > 0) {
             res.json(quotes);  // Return the array of quotes
         } else {
@@ -165,6 +168,27 @@ router.get('/:id/ideaExplorations', async (req, res) => {
       });
     }
   });
+
+  router.get('/:id/people', async (req, res) => {
+    const spiritualityId = req.params.id; // Extract spirituality ID from the request parameters
+    console.log(`Fetching people for spiritualityId: ${spiritualityId}`);
+    
+    try {
+      // Query the Person model for entries where 'spirituality' includes the given spiritualityId
+      const people = await Person.find({ spirituality: spiritualityId }); 
+      
+      console.log('People found:', people);
+      if (people.length > 0) {
+        res.json(people);
+      } else {
+        res.json({ message: 'No people associated with this spirituality.' });
+      }
+    } catch (error) {
+      console.error('Error fetching people:', error);
+      res.status(500).json({ error: 'An error occurred while fetching people.' });
+    }
+  });
+  
   
   
 

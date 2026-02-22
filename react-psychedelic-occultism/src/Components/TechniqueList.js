@@ -28,7 +28,7 @@ const Techniques = () => {
       <ul>
       {techniques.map(technique => (
         <li key={technique._id}>
-          <h2><Link to={`/techniques/${technique._id}`}>{technique.name}</Link></h2>
+          <h2><Link to={`/techniques/${technique.slug}`}>{technique.name}</Link></h2>
           <p>{technique.summary}</p>
         </li>
       ))}

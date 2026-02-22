@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 
 const ExperienceSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
-  description: String,
+  title: String,
+  content: String,
   system: [{ type: Schema.Types.ObjectId, ref: 'spiritualSystem' }],
   techniques: [String], 
   tags: [String], 

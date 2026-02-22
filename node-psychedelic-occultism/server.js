@@ -16,12 +16,15 @@ app.use(cors());
 app.use(express.json()); // Parse incoming JSON requests
 
 // Routes
-const spiritualityRoutes = require('./routes/spiritualityRoutes');
-// console.log('Spirituality routes loaded:', spiritualityRoutes);
-
 const authRoutes = require('./controllers/userController')
-
-const treeElementRoutes = require('./routes/treeRoutes');
+const spiritualityRoutes = require('./controllers/spiritualityController');
+const techniqueRoutes = require('./controllers/techniqueController')
+const experienceRoutes = require('./controllers/experienceController');
+const bookRoutes = require('./controllers/sourceController')
+const personRoutes = require('./controllers/personController')
+const treeRoutes = require('./controllers/treeController');
+const webRoutes = require('./controllers/webController')
+const quoteRoutes = require('./controllers/quoteController')
 
 // const userRoutes = require('./routes/userRoutes');
 // console.log('User routes loaded:', userRoutes);
@@ -37,12 +40,25 @@ const testPasswordComparison = async () => {
 testPasswordComparison();
 
 // // Use routes
-app.use('/api/spirituality', spiritualityRoutes);
-// app.use('/api/auth', userRoutes);
 
 app.use('/api/auth', authRoutes)
 
-app.use('/api/tree', treeElementRoutes);
+app.use('/api/tree', treeRoutes);
+
+app.use('/api/spirituality', spiritualityRoutes);
+// app.use('/api/auth', userRoutes);
+
+app.use('/api/techniques', techniqueRoutes)
+
+app.use('/api/experiences', experienceRoutes);
+
+app.use('/api/books', bookRoutes)
+
+app.use('/api/people', personRoutes)
+
+app.use('/api/webs', webRoutes)
+
+app.use('/api/quotes', quoteRoutes)
 
 
 // Root route

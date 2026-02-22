@@ -6,6 +6,7 @@ const SourceSchema = new Schema({
     type: String,
     required: true,
   },
+  slug: { type: String, required: true, unique: true },
   description: String,
   type: {
     type: String,

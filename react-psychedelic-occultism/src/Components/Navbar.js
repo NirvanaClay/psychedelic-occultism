@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../Styles/navbar.css';
 
-const NavBar = ({ isLoggedIn, setIsLoggedIn }) => {
+import { useAuth } from "../Hooks/useAuth";
+// const { user, logout } = useAuth();
+
+const NavBar = ({ isLoggedIn, setIsLoggedIn, user, setUser }) => {
+  const { logout } = useAuth(user, setUser);
   const navigate = useNavigate();
 
   const [isExploreOpen, setIsExploreOpen] = useState(false);
@@ -10,7 +14,8 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn }) => {
   const [isMySpaceOpen, setIsMySpaceOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove the token
+    // localStorage.removeItem('token'); // Remove the token
+    logout()
     setIsLoggedIn(false); // Update login state
     navigate('/'); // Redirect to home or another page
   };
@@ -30,17 +35,18 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn }) => {
           <span className="dropdown-title">Explore ▼</span>
           {isExploreOpen && (
             <ul className="dropdown-menu">
-              <li><Link to="/explore/spirituality">Spiritual Systems</Link></li>
-              <li><Link to="/explore/people">People</Link></li>
-              <li><Link to="/explore/books">Books</Link></li>
-              <li><Link to="/explore/techniques">Techniques</Link></li>
-              <li><Link to="/explore/experiences">Experiences</Link></li>
-              {/* <li><Link to="/explore/quotes">Quotes</Link></li>
-              <li><Link to="/explore/people">People</Link></li>
-              <li><Link to="/explore/idea-explorations">Idea Explorations</Link></li>
-              <li><Link to="/explore/spiritual-systems">Spiritual Systems</Link></li>
-              <li><Link to="/explore/techniques">Techniques</Link></li>
-              <li><Link to="/explore/personal-experiences">Personal Experiences</Link></li> */}
+              <li><Link to="/spirituality">Spiritual Systems</Link></li>
+              <li><Link to="/people">People</Link></li>
+              <li><Link to="/books">Books</Link></li>
+              <li><Link to="/techniques">Techniques</Link></li>
+              <li><Link to="/experiences">Experiences</Link></li>
+              <li><Link to="/webs">Webs</Link></li>
+              {/* <li><Link to="/quotes">Quotes</Link></li>
+              <li><Link to="/people">People</Link></li>
+              <li><Link to="/idea-explorations">Idea Explorations</Link></li>
+              <li><Link to="/spiritual-systems">Spiritual Systems</Link></li>
+              <li><Link to="/techniques">Techniques</Link></li>
+              <li><Link to="/personal-experiences">Personal Experiences</Link></li> */}
             </ul>
           )}
         </li>
@@ -53,28 +59,29 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn }) => {
           <span className="dropdown-title">Create ▼</span>
           {isCreateOpen && (
             <ul className="dropdown-menu">
-              <li><Link to="/create/web">New Web</Link></li>
-              <li><Link to="/create/item">Add Item</Link></li>
-              <li><Link to="/create/framework">Contribute Framework</Link></li>
+              <li><Link to="/webs/create">New Web</Link></li>
+              <li><Link to="/experiences/create">Share Experience</Link></li>
+              <li><Link to="/frameworks/create">Contribute Framework</Link></li>
             </ul>
           )}
         </li>
-
+        {isLoggedIn && (
         <li
-          className="dropdown"
-          onMouseEnter={() => setIsMySpaceOpen(true)}
-          onMouseLeave={() => setIsMySpaceOpen(false)}
-        >
-          <span className="dropdown-title">My Space ▼</span>
-          {isMySpaceOpen && (
-            <ul className="dropdown-menu">
-              <li><Link to="/my-space/saved">Saved Items</Link></li>
-              <li><Link to="/my-space/drafts">Drafts</Link></li>
-              <li><Link to="/my-space/contributions">Contributions</Link></li>
-            </ul>
-          )}
-        </li>
-
+        className="dropdown"
+        onMouseEnter={() => setIsMySpaceOpen(true)}
+        onMouseLeave={() => setIsMySpaceOpen(false)}
+      >
+        <span className="dropdown-title">My Space ▼</span>
+        {isMySpaceOpen && (
+          <ul className="dropdown-menu">
+            <li><Link to="/my-space/webs">My Webs</Link></li>
+            <li><Link to="/my-space/saved">Saved Items</Link></li>
+            <li><Link to="/my-space/drafts">Drafts</Link></li>
+            <li><Link to="/my-space/contributions">Contributions</Link></li>
+          </ul>
+        )}
+      </li>
+        )}
         <div className="navbar-search">
           <input
             type="text"

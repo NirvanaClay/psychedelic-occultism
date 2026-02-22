@@ -1,0 +1,149 @@
+.share-experience {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  -webkit-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.share-experience h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #343a40;
+}
+
+.share-experience form {
+  width: 100%;
+  max-width: 600px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.share-experience form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.share-experience form .form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #495057;
+}
+
+.share-experience form .form-group input, .share-experience form .form-group textarea, .share-experience form .form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  -webkit-transition: border-color 0.2s;
+  transition: border-color 0.2s;
+}
+
+.share-experience form .form-group input:focus, .share-experience form .form-group textarea:focus, .share-experience form .form-group select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.share-experience form .form-group textarea {
+  resize: vertical;
+}
+
+.share-experience form .tags-input {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.share-experience form .tags-input input {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.share-experience form .tags-input button {
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+}
+
+.share-experience form .tags-input button:hover {
+  background-color: #0056b3;
+}
+
+.share-experience form .tags-list {
+  margin-top: 0.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.share-experience form .tags-list .tag {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: #e9ecef;
+  padding: 0.5rem;
+  border-radius: 15px;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.share-experience form .tags-list .tag button {
+  background: none;
+  border: none;
+  color: #dc3545;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.share-experience form .tags-list .tag button:hover {
+  color: #a71d2a;
+}
+
+.share-experience form button[type="submit"] {
+  -ms-flex-item-align: end;
+      align-self: flex-end;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+}
+
+.share-experience form button[type="submit"]:hover {
+  background-color: #218838;
+}
+/*# sourceMappingURL=experienceShare.css.map */

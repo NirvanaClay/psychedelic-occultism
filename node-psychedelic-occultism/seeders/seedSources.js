@@ -1,48 +1,50 @@
 const mongoose = require('mongoose');
-const Source = require('../models/Source');
-const Spirituality = require('../models/Spirituality');
+const Source = require('../models/Source'); // Update with the correct path to your Source model
+const Person = require('../models/Person'); // Ensure this is the correct path to your Person model
 const sourceData = require('../data/sourceData');
 
-async function seedSources() {
+const seedSources = async () => {
   try {
+    // Connect to the database
     await mongoose.connect('mongodb://127.0.0.1:27017/psychedelic-occultism');
+    console.log('Connected to the database.');
 
+    // Clear existing sources
     await Source.deleteMany({});
+    console.log('Existing sources cleared.');
 
-    const spiritualities = await Spirituality.find();
+    // Insert new source data
+    const insertedSources = [];
 
-    for (const spirituality of spiritualities) {
-      const spiritualityName = spirituality.name;
-      const sources = sourceData[spiritualityName];
-
-      if (sources && sources.length > 0) {
-        const sourceDocs = sources.map((source) => ({
-          title: source.title,
-          type: source.type,
-          image: source.image,
-          description: source.description,
-          publicationDate: source.publicationDate,
-          tags: source.tags,
-          relatedSystems: [spirituality._id], // Assign the ObjectId of the spirituality to relatedSystems
-        }));
-
-        const insertedSources = await Source.insertMany(sourceDocs);
-
-        const sourceIds = insertedSources.map((source) => source._id);
-        spirituality.sources = sourceIds; // This line works if 'sources' is part of the Spirituality schema
-        await spirituality.save();
+    for (const source of sourceData) {
+      // Find the corresponding person by slug
+      const person = await Person.findOne({ slug: source.personSlug });
+      if (!person) {
+        console.warn(`Person not found for slug: ${source.personSlug}`);
+        continue; // Skip this source if the person is not found
       }
+
+      // Create the source with the resolved person ID
+      const newSource = await Source.create({
+        ...source,
+        person: person._id, // Assign the ObjectId of the person
+      });
+
+      insertedSources.push(newSource);
     }
 
-    await mongoose.disconnect();
-    console.log('Sources seeding complete.');
-  } catch (err) {
-    console.error('Error seeding sources:', err);
-    await mongoose.disconnect();
-    process.exit(1);
-  }
-}
+    console.log(`${insertedSources.length} sources seeded successfully.`);
 
+    // Disconnect from the database
+    await mongoose.disconnect();
+    console.log('Database connection closed.');
+  } catch (error) {
+    console.error('Error seeding sources:', error);
+    process.exit(1); // Exit with failure
+  }
+};
+
+// Run the seed function
 seedSources();
 
 module.exports = seedSources;

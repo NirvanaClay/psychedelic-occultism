@@ -7,6 +7,7 @@ const SpiritualitySchema = new Schema({
     required: true,
     unique: true,
   },
+  slug: { type: String, required: true, unique: true },
   defaultDescription: {
     type: String,
     required: true,
