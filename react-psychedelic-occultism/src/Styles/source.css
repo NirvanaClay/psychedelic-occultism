@@ -1,4 +1,4 @@
-#book {
+#source {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -11,25 +11,25 @@
           align-items: center;
   padding: 20px;
   max-width: 600px;
-  margin: 20px auto;
+  margin: 20px auto 200px auto;
 }
 
-#book h1 {
+#source h1 {
   font-size: 2rem;
   margin-bottom: 15px;
   text-align: center;
 }
 
-#book img {
+#source img {
   width: 150px;
   height: auto;
   border-radius: 4px;
   margin-bottom: 15px;
 }
 
-#book p {
+#source p {
   font-size: 1rem;
   line-height: 1.6;
   text-align: justify;
 }
-/*# sourceMappingURL=book.css.map */
+/*# sourceMappingURL=source.css.map */

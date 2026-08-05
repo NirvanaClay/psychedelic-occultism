@@ -25,7 +25,7 @@ const LoginForm = ({ setIsLoggedIn, user, setUser }) => {
       localStorage.setItem('token', token);
       const decodedUser = jwtDecode(token);
       setUser(decodedUser);
-      setIsLoggedIn(true);
+      // setIsLoggedIn(true);
       setErrorMessage(''); // Clear any previous errors
       navigate('/');
     } catch (error) {

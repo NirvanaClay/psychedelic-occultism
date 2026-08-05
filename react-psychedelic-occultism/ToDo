@@ -1,1 +1,1 @@
-Fix that you can add duplicate nodes to webs.
+Fix issue where frontend thinks there is no user but backend thinks you're logged in.

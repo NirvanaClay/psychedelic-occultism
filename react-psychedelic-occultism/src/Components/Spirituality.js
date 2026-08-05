@@ -19,99 +19,182 @@ const Spirituality = () => {
   const [sourcesFetched, setSourcesFetched] = useState(false);
   const [people, setPeople] = useState([]);
   const [peopleFetched, setPeopleFetched] = useState(false);
+  const [quotes, setQuotes] = useState([]);
+  const [quotesFetched, setQuotesFetched] = useState(false); // optional — add if you want consistency
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const location = useLocation();
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/spirituality/${spiritualityId}`)
-      .then((response) => response.json())
-      .then((data) => setSpirituality(data))
-      .catch((error) => console.error('Error fetching spirituality:', error));
-  }, [spiritualityId]);
+  if (!spiritualityId) return;
 
-  useEffect(() => {
-    const fetchSummaries = async () => {
-      if (!spirituality) return; // Avoid fetching summaries until spirituality is loaded
-      try {
-        const response = await fetch(
-          `http://localhost:3001/api/spirituality/${spiritualityId}/summaries`
-        );
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        console.log('Data from fetchSummaries is:', data);
-        setSummaries(data);
-        setSummariesFetched(true);
-      } catch (err) {
-        console.error('Error fetching summaries:', err);
-      }
-    };
-    fetchSummaries();
-  }, [spirituality, spiritualityId]);
+  const fetchSpiritualityDetails = async () => {
+    setLoading(true);
+    setError(null);
 
-  useEffect(() => {
-    const fetchIdeaExplorations = async () => {
-      if (!spirituality) return; // Avoid fetching idea explorations until spirituality is loaded
-      try {
-        const response = await fetch(
-          `http://localhost:3001/api/spirituality/${spiritualityId}/ideaExplorations`
-        );
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        console.log('Data from fetchIdeaExplorations is:', data);
-        setIdeaExplorations(data);
-        setIdeaExplorationsFetched(true);
-      } catch (err) {
-        console.error('Error fetching idea explorations:', err);
-      }
-    };
-    fetchIdeaExplorations();
-  }, [spirituality, spiritualityId]);
+    try {
+      const [
+        spiritualityResponse,
+        quotesResponse,
+        summariesResponse,
+        ideaExplorationsResponse,
+        sourcesResponse,
+        peopleResponse,
+      ] = await Promise.all([
+        fetch(`http://localhost:3001/api/spirituality/${spiritualityId}`),
+        fetch(`http://localhost:3001/api/spirituality/${spiritualityId}/quotes`),          // ← added this
+        fetch(`http://localhost:3001/api/spirituality/${spiritualityId}/summaries`),
+        fetch(`http://localhost:3001/api/spirituality/${spiritualityId}/ideaExplorations`),
+        fetch(`http://localhost:3001/api/spirituality/${spiritualityId}/sources`),
+        fetch(`http://localhost:3001/api/spirituality/${spiritualityId}/people`),
+      ]);
 
-  useEffect(() => {
-    const fetchSources = async () => {
-      if (!spirituality) return; // Avoid fetching sources until spirituality is loaded
-      try {
-        const response = await fetch(
-          `http://localhost:3001/api/spirituality/${spiritualityId}/sources`
-        );
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        console.log('Data from fetchSources is:', data);
-        setSources(data);
-        setSourcesFetched(true);
-      } catch (err) {
-        console.error('Error fetching sources:', err);
-      }
-    };
-    fetchSources();
-  }, [spirituality, spiritualityId]);
+      // Check all responses at once
+      const failedFetch = [
+        { name: 'spirituality', res: spiritualityResponse },
+        { name: 'quotes', res: quotesResponse },
+        { name: 'summaries', res: summariesResponse },
+        { name: 'idea explorations', res: ideaExplorationsResponse },
+        { name: 'sources', res: sourcesResponse },
+        { name: 'people', res: peopleResponse },
+      ].find(({ res }) => !res.ok);
 
-  useEffect(() => {
-    const fetchPeople = async () => {
-      if (!spirituality) return; // Avoid fetching people until spirituality is loaded
-      try {
-        const response = await fetch(
-          `http://localhost:3001/api/spirituality/${spiritualityId}/people`
-        );
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        console.log('Data from fetchPeople is:', data);
-        setPeople(data); // Set the fetched people data
-        setPeopleFetched(true); // Indicate that people have been fetched
-      } catch (err) {
-        console.error('Error fetching people:', err);
+      if (failedFetch) {
+        throw new Error(`Failed to fetch ${failedFetch.name}`);
       }
-    };
-    fetchPeople();
-  }, [spirituality, spiritualityId]);
+
+      const [
+        spiritualityData,
+        quotesData,
+        summariesData,
+        ideaExplorationsData,
+        sourcesData,
+        peopleData,
+      ] = await Promise.all([
+        spiritualityResponse.json(),
+        quotesResponse.json(),
+        summariesResponse.json(),
+        ideaExplorationsResponse.json(),
+        sourcesResponse.json(),
+        peopleResponse.json(),
+      ]);
+
+      setSpirituality(spiritualityData);
+      setQuotes(quotesData);                      // ← new
+      setSummaries(summariesData);
+      setIdeaExplorations(ideaExplorationsData);
+      setSources(sourcesData);
+      setPeople(peopleData);
+
+      // If you still use these flags, set them here
+      setSummariesFetched(true);
+      setIdeaExplorationsFetched(true);
+      setSourcesFetched(true);
+      setPeopleFetched(true);
+      // add setQuotesFetched(true) if you have it
+
+    } catch (error) {
+      console.error('Error fetching spirituality details:', error);
+      setError(error.message || 'Failed to load spirituality content');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchSpiritualityDetails();
+}, [spiritualityId]);
+
+  // useEffect(() => {
+  //   fetch(`http://localhost:3001/api/spirituality/${spiritualityId}`)
+  //     .then((response) => response.json())
+  //     .then((data) => setSpirituality(data))
+  //     .catch((error) => console.error('Error fetching spirituality:', error));
+  // }, [spiritualityId]);
+
+  // useEffect(() => {
+  //   const fetchSummaries = async () => {
+  //     if (!spirituality) return; // Avoid fetching summaries until spirituality is loaded
+  //     try {
+  //       const response = await fetch(
+  //         `http://localhost:3001/api/spirituality/${spiritualityId}/summaries`
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       const data = await response.json();
+  //       console.log('Data from fetchSummaries is:', data);
+  //       setSummaries(data);
+  //       setSummariesFetched(true);
+  //     } catch (err) {
+  //       console.error('Error fetching summaries:', err);
+  //     }
+  //   };
+  //   fetchSummaries();
+  // }, [spirituality, spiritualityId]);
+
+  // useEffect(() => {
+  //   const fetchIdeaExplorations = async () => {
+  //     if (!spirituality) return; // Avoid fetching idea explorations until spirituality is loaded
+  //     try {
+  //       const response = await fetch(
+  //         `http://localhost:3001/api/spirituality/${spiritualityId}/ideaExplorations`
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       const data = await response.json();
+  //       console.log('Data from fetchIdeaExplorations is:', data);
+  //       setIdeaExplorations(data);
+  //       setIdeaExplorationsFetched(true);
+  //     } catch (err) {
+  //       console.error('Error fetching idea explorations:', err);
+  //     }
+  //   };
+  //   fetchIdeaExplorations();
+  // }, [spirituality, spiritualityId]);
+
+  // useEffect(() => {
+  //   const fetchSources = async () => {
+  //     if (!spirituality) return; // Avoid fetching sources until spirituality is loaded
+  //     try {
+  //       const response = await fetch(
+  //         `http://localhost:3001/api/spirituality/${spiritualityId}/sources`
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       const data = await response.json();
+  //       console.log('Data from fetchSources is:', data);
+  //       setSources(data);
+  //       setSourcesFetched(true);
+  //     } catch (err) {
+  //       console.error('Error fetching sources:', err);
+  //     }
+  //   };
+  //   fetchSources();
+  // }, [spirituality, spiritualityId]);
+
+  // useEffect(() => {
+  //   const fetchPeople = async () => {
+  //     if (!spirituality) return; // Avoid fetching people until spirituality is loaded
+  //     try {
+  //       const response = await fetch(
+  //         `http://localhost:3001/api/spirituality/${spiritualityId}/people`
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       const data = await response.json();
+  //       console.log('Data from fetchPeople is:', data);
+  //       setPeople(data); // Set the fetched people data
+  //       setPeopleFetched(true); // Indicate that people have been fetched
+  //     } catch (err) {
+  //       console.error('Error fetching people:', err);
+  //     }
+  //   };
+  //   fetchPeople();
+  // }, [spirituality, spiritualityId]);
   
 
   if (!spirituality) {
@@ -175,6 +258,7 @@ const Spirituality = () => {
       </div>
       <h2>Relevant Books</h2>
       <Slider items={Array.isArray(sources) ? sources : []} />
+      <h2>Techniques</h2>
     </div>
   );
 };

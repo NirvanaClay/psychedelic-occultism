@@ -16,7 +16,7 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn, user, setUser }) => {
   const handleLogout = () => {
     // localStorage.removeItem('token'); // Remove the token
     logout()
-    setIsLoggedIn(false); // Update login state
+    setUser(); // Update login state
     navigate('/'); // Redirect to home or another page
   };
 
@@ -37,7 +37,7 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn, user, setUser }) => {
             <ul className="dropdown-menu">
               <li><Link to="/spirituality">Spiritual Systems</Link></li>
               <li><Link to="/people">People</Link></li>
-              <li><Link to="/books">Books</Link></li>
+              <li><Link to="/sources">Sources</Link></li>
               <li><Link to="/techniques">Techniques</Link></li>
               <li><Link to="/experiences">Experiences</Link></li>
               <li><Link to="/webs">Webs</Link></li>

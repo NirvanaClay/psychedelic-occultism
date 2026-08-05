@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 
 import { useAuth } from "./Hooks/useAuth";
 
@@ -18,8 +19,8 @@ import Spirituality from './Components/Spirituality'
 import Techniques from './Components/TechniqueList'
 import Technique from './Components/Technique'
 import Summary from './Components/Summary'
-import BookList from './Components/BookList'
-import Book from './Components/Book'
+import SourceList from './Components/SourceList'
+import Source from './Components/Source'
 import PersonList from './Components/PersonList'
 import Person from './Components/Person'
 import IdeaExploration from './Components/IdeaExploration'
@@ -33,19 +34,64 @@ import Login from './Components/Login'
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState()
+  const [activeDropdownId, setActiveDropdownId] = useState(null);
 
   const { logout } = useAuth(user, setUser);
 
-  useEffect(() => {
-    if(user){
-      setIsLoggedIn(true)
-      console.log("user is:", user)
-    }
-    else{
-      setIsLoggedIn(false)
-      console.log("There is no user.")
-    }
-  }, [user, isLoggedIn])
+const checkLogin = async () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    setUser(null);
+    return;
+  }
+
+  try {
+    const res = await axios.get(
+      "http://localhost:3001/api/auth/me",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setUser(res.data);
+  } catch (err) {
+    console.error("Error checking login:", err);
+
+    localStorage.removeItem("token");
+    setUser(null);
+  }
+};
+
+useEffect(() => {
+  checkLogin();
+}, []);
+
+useEffect(() => {
+  console.log("user is:", user);
+
+  if (user) {
+    setIsLoggedIn(true);
+  } else {
+    setIsLoggedIn(false);
+  }
+}, [user, isLoggedIn]); // or just [user] if that ends up working in your app
+
+  // useEffect(() => {
+  //   checkLogin()
+  //   console.log("user is:")
+  //   console.log(user)
+  //   if(user){
+  //     setIsLoggedIn(true)
+  //     console.log("user is:", user)
+  //   }
+  //   else{
+  //     setIsLoggedIn(false)
+  //     console.log("There is no user.")
+  //   }
+  // }, [user, isLoggedIn])
   
   return (
     <Router>
@@ -55,10 +101,10 @@ function App() {
         <Route path="/tree" element={<Tree />} />
         <Route path="/tree/:name" element={<TreeElement />} />
         <Route path="/psychedelics" element={<Psychedelics />} />
-        <Route path="/books" element={<BookList />} />
-        <Route path="/books/:id" element={<Book />} />
+        <Route path="/sources" element={<SourceList />} />
+        <Route path="/sources/:id" element={<Source />} />
         <Route path="/people" element={<PersonList />} />
-        <Route path="/people/:slug" element={<Person />} />
+        <Route path="/people/:slug" element={<Person activeDropdownId={activeDropdownId} setActiveDropdownId={setActiveDropdownId} />} />
         <Route path="/experiences" element={<ExperienceList />} />
         <Route path="/experiences/:id" element={<Experience />} />
         <Route path="/techniques" element={<Techniques />} />
@@ -67,7 +113,7 @@ function App() {
         <Route path="/spirituality/:id" element={<Spirituality />} />
         <Route path="/spirituality/:id1/summaries/:id2" element={<Summary />} />
         <Route path="/spirituality/:id1/ideaExplorations/:id2" element={<IdeaExploration />} />
-        <Route path="/spirituality/:id1/sources/:id2" element={<Book />} />
+        <Route path="/spirituality/:id1/sources/:id2" element={<Source />} />
         <Route path="/spirituality/:id/create-summary" element={<CreateSummary />} />
         <Route path="/spirituality/:id/create-idea" element={<CreateIdeaExploration />} />
         <Route path="/experiences/create" element={<ExperienceShare />} />

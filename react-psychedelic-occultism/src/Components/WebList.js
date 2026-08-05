@@ -21,6 +21,14 @@ const WebList = () => {
     loadWebs();
   }, []);
 
+  const endpointMap = {
+  Person: "people",
+  Book: "sources",
+  Quote: "quotes",
+  Experience: "experiences",
+  Technique: "techniques",
+  };
+
   // Function to fetch node details based on model type
   const fetchNodeDetailsForWebs = async (webs) => {
     const updatedWebs = await Promise.all(
@@ -32,9 +40,13 @@ const WebList = () => {
             try {
               // Special case for "Person" → "People"
               const endpoint =
-                node.refModel.toLowerCase() === "person"
-                  ? "people"
-                  : `${node.refModel.toLowerCase()}s`;
+                endpointMap[node.refModel] ??
+                `${node.refModel.toLowerCase()}s`;
+                // node.refModel.toLowerCase() === "person"
+                //   ? "people"
+                //   : node.refModel.toLowerCase() === "book"
+                //   ? "sources"
+                //   : `${node.refModel.toLowerCase()}s`;
         
               const response = await fetch(`http://localhost:3001/api/${endpoint}/${node.refId}`);
               if (!response.ok) throw new Error("Failed to fetch node details");

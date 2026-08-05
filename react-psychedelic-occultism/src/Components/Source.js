@@ -3,36 +3,36 @@ import { useParams } from 'react-router-dom';
 
 import AddToWebButton from "./AddToWebButton"
 
-import '../Styles/book.css'
+import '../Styles/source.css'
 
-const Book = () => {
+const Source = () => {
   const { id } = useParams();
-  const [book, setBook] = useState(null);
+  const [source, setSource] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/books/${id}`)
+    fetch(`http://localhost:3001/api/sources/${id}`)
       .then(response => response.json())
       .then((data) => {
         console.log('Fetched Data:', data); // Log the data for debugging
-        setBook(data); // Update the state only after confirming data is correct
+        setSource(data); // Update the state only after confirming data is correct
       })
       .catch(error => console.error('Error fetching summary:', error));
   }, [id]);
 
-  console.log("book is:", book)
+  console.log("Source is:", source)
 
-  if (!book) {
+  if (!source) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div id='book'>
-      <h1>{book.title}</h1>
-      <img src={book.image} />
-      <p>{book.description}</p>
-      <AddToWebButton refModel="Book" refId={book._id} />
+    <div id='source'>
+      <h1>{source.title}</h1>
+      <img src={source.image} />
+      <p>{source.description}</p>
+      <AddToWebButton refModel="Source" refId={source._id} />
     </div> 
   )
 }
 
-export default Book
+export default Source

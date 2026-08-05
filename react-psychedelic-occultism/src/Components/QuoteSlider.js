@@ -101,7 +101,9 @@ const QuoteSlider = () => {
         <>
           <div className="quote">
             <p className={fadeState}>{currentQuote.text}</p>
-            <p>{currentQuote.person?.name || 'Unknown Author'}</p>
+            {currentQuote.person?.name && (
+              <p>{currentQuote.person.name}</p>
+            )}
           </div>
           <div className="quote-icons">
             {/* Web selection button */}
