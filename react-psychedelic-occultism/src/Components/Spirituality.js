@@ -27,6 +27,15 @@ const Spirituality = () => {
   const location = useLocation();
 
   useEffect(() => {
+    console.log("Quotes are:")
+    console.log(quotes)
+    console.log("People are:")
+    console.log(people)
+    console.log("Sources are:")
+    console.log(sources)
+  }, [quotes, sources, people])
+
+  useEffect(() => {
   if (!spiritualityId) return;
 
   const fetchSpiritualityDetails = async () => {
@@ -105,98 +114,6 @@ const Spirituality = () => {
   fetchSpiritualityDetails();
 }, [spiritualityId]);
 
-  // useEffect(() => {
-  //   fetch(`http://localhost:3001/api/spirituality/${spiritualityId}`)
-  //     .then((response) => response.json())
-  //     .then((data) => setSpirituality(data))
-  //     .catch((error) => console.error('Error fetching spirituality:', error));
-  // }, [spiritualityId]);
-
-  // useEffect(() => {
-  //   const fetchSummaries = async () => {
-  //     if (!spirituality) return; // Avoid fetching summaries until spirituality is loaded
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:3001/api/spirituality/${spiritualityId}/summaries`
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-  //       const data = await response.json();
-  //       console.log('Data from fetchSummaries is:', data);
-  //       setSummaries(data);
-  //       setSummariesFetched(true);
-  //     } catch (err) {
-  //       console.error('Error fetching summaries:', err);
-  //     }
-  //   };
-  //   fetchSummaries();
-  // }, [spirituality, spiritualityId]);
-
-  // useEffect(() => {
-  //   const fetchIdeaExplorations = async () => {
-  //     if (!spirituality) return; // Avoid fetching idea explorations until spirituality is loaded
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:3001/api/spirituality/${spiritualityId}/ideaExplorations`
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-  //       const data = await response.json();
-  //       console.log('Data from fetchIdeaExplorations is:', data);
-  //       setIdeaExplorations(data);
-  //       setIdeaExplorationsFetched(true);
-  //     } catch (err) {
-  //       console.error('Error fetching idea explorations:', err);
-  //     }
-  //   };
-  //   fetchIdeaExplorations();
-  // }, [spirituality, spiritualityId]);
-
-  // useEffect(() => {
-  //   const fetchSources = async () => {
-  //     if (!spirituality) return; // Avoid fetching sources until spirituality is loaded
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:3001/api/spirituality/${spiritualityId}/sources`
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-  //       const data = await response.json();
-  //       console.log('Data from fetchSources is:', data);
-  //       setSources(data);
-  //       setSourcesFetched(true);
-  //     } catch (err) {
-  //       console.error('Error fetching sources:', err);
-  //     }
-  //   };
-  //   fetchSources();
-  // }, [spirituality, spiritualityId]);
-
-  // useEffect(() => {
-  //   const fetchPeople = async () => {
-  //     if (!spirituality) return; // Avoid fetching people until spirituality is loaded
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:3001/api/spirituality/${spiritualityId}/people`
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-  //       const data = await response.json();
-  //       console.log('Data from fetchPeople is:', data);
-  //       setPeople(data); // Set the fetched people data
-  //       setPeopleFetched(true); // Indicate that people have been fetched
-  //     } catch (err) {
-  //       console.error('Error fetching people:', err);
-  //     }
-  //   };
-  //   fetchPeople();
-  // }, [spirituality, spiritualityId]);
-  
-
   if (!spirituality) {
     return <div>Loading...</div>;
   }
@@ -207,20 +124,47 @@ const Spirituality = () => {
       <p>{spirituality.defaultDescription}</p>
       <div className='quotes'>
         <h2>Relevant Quotes</h2>
-        <QuoteSlider />
+        <QuoteSlider quotes={quotes} />
       </div>
+      <h2>Relevant Sources</h2>
+
+      <Slider
+        items={Array.isArray(sources) ? sources : []}
+        renderItem={(source) => (
+          <>
+            <Link to={`/sources/${source._id}`}>
+              <img src={source.image} alt={source.title} />
+            </Link>
+
+            <Link to={`/sources/${source._id}`}>
+              <h3>{source.title}</h3>
+            </Link>
+
+            <p>{source.description}</p>
+          </>
+        )}
+      />
       <div className="people-list">
       <h2>Associated People</h2>
       {peopleFetched && people.length > 0 ? (
-        <ul>
-          {people.map((person) => (
-            <li key={person._id}>
-              <div className="person">
-                <p><Link to={`/people/${person.slug}`}>{person.name}</Link></p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <Slider
+          items={Array.isArray(people) ? people : []}
+          renderItem={(person) => (
+            <>
+              <Link to={`/people/${person.slug}`}>
+                {person.image && (
+                  <img src={person.image} alt={person.name} />
+                )}
+              </Link>
+
+              <Link to={`/people/${person.slug}`}>
+                <h3>{person.name}</h3>
+              </Link>
+
+              {person.bio && <p>{person.bio}</p>}
+            </>
+          )}
+        />
       ) : peopleFetched ? (
         <p>No people associated with this spirituality.</p>
       ) : (
@@ -256,8 +200,6 @@ const Spirituality = () => {
           )}
         </ul>
       </div>
-      <h2>Relevant Books</h2>
-      <Slider items={Array.isArray(sources) ? sources : []} />
       <h2>Techniques</h2>
     </div>
   );

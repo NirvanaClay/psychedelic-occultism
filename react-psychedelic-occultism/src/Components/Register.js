@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 import '../Styles/register.css';
 
-const RegisterForm = ({ setIsLoggedIn }) => {
+const RegisterForm = ({ setUser }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,11 +17,17 @@ const RegisterForm = ({ setIsLoggedIn }) => {
     e.preventDefault();
     try {
       const res = await axios.post('http://localhost:3001/api/auth/register', { username, email, password });
-      console.log("In handleSubmit, res.data.token is:", res.data.token)
-      localStorage.setItem('token', res.data.token);
-      setIsLoggedIn(true)
-      setErrorMessage('');  // Clear any previous errors on successful registration
-      navigate('/'); // Redirect to home after successful registration
+      const token = res.data.token;
+      localStorage.setItem('token', token);
+      const decodedUser = jwtDecode(token);
+      setUser(decodedUser);
+      setErrorMessage('');
+      navigate('/');
+      // console.log("In handleSubmit, res.data.token is:", res.data.token)
+      // localStorage.setItem('token', res.data.token);
+      // setIsLoggedIn(true)
+      // setErrorMessage('');  // Clear any previous errors on successful registration
+      // navigate('/'); // Redirect to home after successful registration
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Registration failed');
     }

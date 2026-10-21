@@ -1,12 +1,9 @@
-const mongoose = require('mongoose');
 const Summary = require('../models/Summary');
 const Spirituality = require('../models/Spirituality');
 const summaryData = require('../data/summaryData');
 
 async function seedSummaries() {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/psychedelic-occultism');
-
     await Summary.deleteMany({});
 
     const spiritualities = await Spirituality.find();
@@ -34,11 +31,8 @@ async function seedSummaries() {
     console.log('Summaries seeding complete.');
   } catch (err) {
     console.error('Error seeding summaries:', err);
-    await mongoose.disconnect();
-    process.exit(1);
+    throw error
   }
 }
-
-seedSummaries();
 
 module.exports = seedSummaries;

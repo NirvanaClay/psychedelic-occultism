@@ -6,10 +6,14 @@ const WebSchema = new Schema({
   description: { type: String },
   createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   favoritedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  normalizedTitle: {
+    type: String,
+    required: true,
+  },
 
   // Nodes = The elements added to this web (Authors, Quotes, Books, Techniques, etc.)
   nodes: [{
-    refModel: { type: String, enum: ['Author', 'Quote', 'Book', 'Experience', 'Technique'], required: true },
+    refModel: { type: String, enum: ['Person', 'Quote', 'Source', 'Experience', 'Technique'], required: true },
     refId: { type: Schema.Types.ObjectId, required: true, refPath: 'nodes.refModel' },
     _id: false  // Prevents duplicate subdocument IDs
   }],
@@ -31,6 +35,11 @@ WebSchema.index(
 // Ensure each node is unique within a web
 WebSchema.index(
   { '_id': 1, 'nodes.refModel': 1, 'nodes.refId': 1 },
+  { unique: true }
+);
+
+WebSchema.index(
+  { createdBy: 1, normalizedTitle: 1 },
   { unique: true }
 );
 

@@ -11,7 +11,7 @@ const personSchema = new Schema({
   slug: { type: String, required: true, unique: true },
   image: String,
   bio: String,
-  spirituality: [{
+  spiritualities: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Spirituality',
   }],
@@ -19,17 +19,16 @@ const personSchema = new Schema({
   likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
 
-personSchema.virtual('books', {
+personSchema.virtual('sources', {
   ref: 'Source',
   localField: '_id',
-  foreignField: 'person',
+  foreignField: 'people',
   justOne: false,
-  options: { match: { type: 'Book' } },
 });
 
 generateSlug(personSchema);
 
 const Person = mongoose.model('Person', personSchema);
 
-module.exports = Person; // Corrected this line
+module.exports = Person; 
 

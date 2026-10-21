@@ -1,13 +1,8 @@
-const mongoose = require('mongoose');
 const Technique = require('../models/Technique');
 const techniqueData = require('../data/techniqueData')
 
-const seedDatabase = async () => {
+const seedTechniques = async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/psychedelic-occultism');
-
-    console.log('Connected to MongoDB');
-
     // Clear existing data
     await Technique.deleteMany({});
     console.log('Cleared existing Techniques');
@@ -20,9 +15,8 @@ const seedDatabase = async () => {
     console.log('Database connection closed');
   } catch (error) {
     console.error('Error seeding database:', error);
-    mongoose.connection.close();
-    process.exit(1);
+    throw error
   }
 };
 
-seedDatabase();
+module.exports = seedTechniques;

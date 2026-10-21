@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const Quote = require('../models/Quote'); // Adjust path to your Quote model
 const Source = require('../models/Source'); // Adjust path to your Source model
 const Person = require('../models/Person'); // Adjust path to your Person model
@@ -7,68 +6,106 @@ const quoteData = require('../data/quoteData'); // Adjust path to your quote dat
 
 const seedQuotes = async () => {
   try {
-    // Connect to MongoDB
-    await mongoose.connect('mongodb://127.0.0.1:27017/psychedelic-occultism');
-    console.log('Connected to MongoDB');
-
     // Clear existing quotes
     await Quote.deleteMany();
     console.log('Existing quotes deleted');
 
-    // Process and insert quotes
+    let savedCount = 0;
+
     for (const quote of quoteData) {
-      // Find the referenced person by slug
-      const person = await Person.findOne({ slug: quote.personSlug });
-      if (!person) {
-        console.error(`Person with slug "${quote.personSlug}" not found. Skipping quote.`);
-        continue;
+      let personId = null;
+      let sourceId = null;
+
+      // Person — optional
+      if (quote.personSlug) {
+        const person = await Person.findOne({ slug: quote.personSlug });
+        if (person) {
+          personId = person._id;
+        } else {
+          console.warn(`Person with slug "${quote.personSlug}" not found for quote "${quote.text.slice(0, 60)}...". Saving without person reference.`);
+        }
+      } else {
+        console.log(`No personSlug provided for quote "${quote.text.slice(0, 60)}...". Saving without person.`);
       }
 
-      // Find the referenced source by slug
-      const source = await Source.findOne({ slug: quote.sourceSlug });
-      if (!source) {
-        console.error(`Source with slug "${quote.sourceSlug}" not found. Skipping quote.`);
-        continue;
+      // Source — optional
+      if (quote.sourceSlug) {
+        const source = await Source.findOne({ slug: quote.sourceSlug });
+        if (source) {
+          sourceId = source._id;
+        } else {
+          console.warn(`Source with slug "${quote.sourceSlug}" not found for quote "${quote.text.slice(0, 60)}...". Saving without source reference.`);
+        }
+      } else {
+        console.log(`No sourceSlug provided for quote "${quote.text.slice(0, 60)}...". Saving without source.`);
       }
 
-      // Find the referenced spirituality by slug(s)
-      let spirituality = [];
-      if (quote.spiritualitySlug) {
-        spirituality = await Promise.all(
-          quote.spiritualitySlug.map(async (slug) => {
+      // Spirituality — already optional and handled well
+      // let spiritualityIds = [];
+      // if (quote.spiritualitySlug && Array.isArray(quote.spiritualitySlug)) {
+      //   spiritualityIds = await Promise.all(
+      //     quote.spiritualitySlug.map(async (slug) => {
+      //       const spiritualItem = await Spirituality.findOne({ slug });
+      //       if (!spiritualItem) {
+      //         console.warn(`Spirituality with slug "${slug}" not found for quote "${quote.text.slice(0, 60)}..."`);
+      //         return null;
+      //       }
+      //       return spiritualItem._id;
+      //     })
+      //   );
+      //   spiritualityIds = spiritualityIds.filter(id => id !== null);
+      // }
+
+      let spiritualityIds = [];
+
+      if (quote.spiritualitySlugs && Array.isArray(quote.spiritualitySlugs)) {
+        spiritualityIds = await Promise.all(
+          quote.spiritualitySlugs.map(async (slug) => {
             const spiritualItem = await Spirituality.findOne({ slug });
+
             if (!spiritualItem) {
-              console.warn(`Spirituality with slug "${slug}" not found.`);
+              console.warn(
+                `Spirituality with slug "${slug}" not found for quote "${quote.text.slice(0, 60)}..."`
+              );
+
               return null;
             }
+
             return spiritualItem._id;
           })
         );
-        // Filter out any null values if some slugs didn't match
-        spirituality = spirituality.filter((id) => id !== null);
-      }
 
-      // Create the quote with references
+        spiritualityIds = spiritualityIds.filter(id => id !== null);
+      }
+      // Create and save (person/source can be null)
+      // const newQuote = new Quote({
+      //   text: quote.text,
+      //   person: personId,       // null is allowed
+      //   source: sourceId,       // null is allowed
+      //   spirituality: spiritualityIds,
+      //   likes: quote.likes || 0,
+      //   likedBy: quote.likedBy || [],
+      // });
+
       const newQuote = new Quote({
         text: quote.text,
-        person: person._id, // Resolved Person ID
-        source: source._id, // Resolved Source ID
-        spirituality: spirituality, // Resolved Spirituality IDs
+        person: personId,
+        source: sourceId,
+        spiritualities: spiritualityIds,
         likes: quote.likes || 0,
         likedBy: quote.likedBy || [],
       });
 
       await newQuote.save();
-      console.log(`Quote saved: "${quote.text}"`);
+      savedCount++;
+      console.log(`Quote saved: "${quote.text.slice(0, 60)}..."`);
     }
 
-    console.log('Quotes seeding completed');
-    mongoose.connection.close();
-  } catch (error) {
-    console.error('Error seeding quotes:', error);
-    mongoose.connection.close();
+    console.log(`Quotes seeding completed — ${savedCount} quotes saved`);
+  } catch (err) {
+    console.error('Error seeding quotes:', err);
+    throw err;
   }
 };
 
-// Call the seeder function
-seedQuotes();
+module.exports = seedQuotes;

@@ -4,7 +4,6 @@
   min-height: 240px;
   margin: 0 auto;
   z-index: 11;
-  overflow: hidden;
   background: #f5f5f5;
   border-radius: 10px;
   display: -webkit-box;
@@ -21,7 +20,7 @@
       -ms-flex-pack: center;
           justify-content: center;
   text-align: center;
-  padding: 0 20px;
+  padding: 20px;
   white-space: pre-line;
 }
 
@@ -54,21 +53,56 @@
   display: flex;
   gap: 40px;
   position: relative;
-  /* Dropdown container */
-  /* Dropdown menu */
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
-.quote-container .quote-icons img {
+.quote-container .quote-icons .dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.quote-container .quote-icons .dropdown-trigger,
+.quote-container .quote-icons .refresh-button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.quote-container .quote-icons .dropdown-trigger {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.quote-container .quote-icons .dropdown-trigger img {
   width: 30px;
   height: 30px;
-  margin-top: -3px;
-  cursor: pointer;
-  position: relative;
-  z-index: 20;
+  display: block;
 }
 
-.quote-container .quote-icons .refresh-icon,
-.quote-container .quote-icons .favorite-icon {
+.quote-container .quote-icons .refresh-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.quote-container .quote-icons .refresh-icon {
   font-size: 24px;
   color: #333;
   cursor: pointer;
@@ -76,22 +110,8 @@
   transition: color 0.3s ease;
 }
 
-.quote-container .quote-icons .refresh-icon:hover,
-.quote-container .quote-icons .favorite-icon:hover {
+.quote-container .quote-icons .refresh-icon:hover {
   color: #000;
-}
-
-.quote-container .quote-icons .favorite-icon {
-  color: #ff0000;
-}
-
-.quote-container .quote-icons .favorite-icon:hover {
-  color: #cc0000;
-}
-
-.quote-container .quote-icons .dropdown-container {
-  position: relative;
-  display: inline-block;
 }
 
 .quote-container .quote-icons .dropdown-menu {
@@ -103,8 +123,8 @@
   background: white;
   border: 1px solid #ddd;
   padding: 10px;
-  -webkit-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-          box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   min-width: 160px;
   border-radius: 5px;
@@ -126,15 +146,20 @@
 }
 
 .quote-container .quote-icons .dropdown-menu li {
+  padding: 0;
+}
+
+.quote-container .quote-icons .dropdown-menu li button {
+  width: 100%;
   padding: 8px 10px;
+  border: none;
+  background: transparent;
   cursor: pointer;
   text-align: left;
-  -webkit-transition: background 0.2s ease-in-out;
-  transition: background 0.2s ease-in-out;
   border-radius: 3px;
 }
 
-.quote-container .quote-icons .dropdown-menu li:hover {
+.quote-container .quote-icons .dropdown-menu li button:hover {
   background: #f0f0f0;
 }
 /*# sourceMappingURL=quoteslider.css.map */

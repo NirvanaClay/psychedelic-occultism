@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 
 // Protection middleware
 const protect = (req, res, next) => {
+  console.log('PROTECT MIDDLEWARE RUNNING for:', req.method, req.originalUrl);
+  console.log('Headers.Authorization:', req.headers.authorization);
   // Extract the token from the Authorization header
   const token = req.headers.authorization?.split(' ')[1];
   

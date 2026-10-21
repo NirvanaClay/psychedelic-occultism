@@ -20,7 +20,7 @@
   text-align: center;
 }
 
-#source img {
+#source .source-image {
   width: 150px;
   height: auto;
   border-radius: 4px;

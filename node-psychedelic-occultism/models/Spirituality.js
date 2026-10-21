@@ -12,14 +12,14 @@ const SpiritualitySchema = new Schema({
     type: String,
     required: true,
   },
-  relevantBooks: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Source'
-  }],
-  significantQuotes: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Quote',
-  }],
+  // relevantSources: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Source'
+  // }],
+  // significantQuotes: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Quote',
+  // }],
   summaries: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Summary',

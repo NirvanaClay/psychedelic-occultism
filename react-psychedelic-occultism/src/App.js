@@ -27,6 +27,7 @@ import IdeaExploration from './Components/IdeaExploration'
 import CreateSummary from './Components/CreateSummary'
 import CreateIdeaExploration from './Components/CreateIdeaExploration'
 import WebList from './Components/WebList'
+import Web from './Components/Web'
 import WebCreate from './Components/WebCreate';
 import Register from './Components/Register'
 import Login from './Components/Login'
@@ -78,20 +79,6 @@ useEffect(() => {
     setIsLoggedIn(false);
   }
 }, [user, isLoggedIn]); // or just [user] if that ends up working in your app
-
-  // useEffect(() => {
-  //   checkLogin()
-  //   console.log("user is:")
-  //   console.log(user)
-  //   if(user){
-  //     setIsLoggedIn(true)
-  //     console.log("user is:", user)
-  //   }
-  //   else{
-  //     setIsLoggedIn(false)
-  //     console.log("There is no user.")
-  //   }
-  // }, [user, isLoggedIn])
   
   return (
     <Router>
@@ -119,7 +106,8 @@ useEffect(() => {
         <Route path="/experiences/create" element={<ExperienceShare />} />
         <Route path="/my-space/webs" element={<WebList />} />
         <Route path="/webs/create" element={<WebCreate />} />
-        <Route path="/register" element={<Register setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/webs/:id" element={<Web />} />
+        <Route path="/register" element={<Register setUser={setUser} />} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser} />} />
       </Routes>
     </Router>

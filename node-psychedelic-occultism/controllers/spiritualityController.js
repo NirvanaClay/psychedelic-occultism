@@ -37,8 +37,11 @@ router.get('/:id', async (req, res) => {
 router.get('/:id/quotes', async (req, res) => {
     const spiritualityId = req.params.id;
     try {
-        const quotes = await Quote.find({ spirituality: spiritualityId })
-        .populate('person');
+        // const quotes = await Quote.find({ spirituality: spiritualityId })
+        // .populate('person');
+        const quotes = await Quote.find({ spiritualities: spiritualityId })
+        .populate('person')
+        .populate('source');
         
         if (quotes.length > 0) {
             res.json(quotes);  // Return the array of quotes
@@ -125,67 +128,141 @@ router.get('/:id/ideaExplorations', async (req, res) => {
   });
   
 
+  // router.get('/:id/sources', async (req, res) => {
+  //   const spiritualityId = req.params.id;
+
+  //   try {
+  //     const spirituality = await Spirituality.findById(spiritualityId)
+  //       .populate('relevantSources');
+
+  //     if (!spirituality) {
+  //       return res.status(404).json({
+  //         message: 'Spirituality not found.',
+  //       });
+  //     }
+
+  //     res.json(spirituality.relevantSources);
+  //   } catch (error) {
+  //     console.error('Error fetching sources:', error);
+  //     res.status(500).json({
+  //       error: 'An error occurred while fetching sources.',
+  //     });
+  //   }
+  // });
+
   router.get('/:id/sources', async (req, res) => {
     const spiritualityId = req.params.id;
-    console.log(`Fetching sources for spiritualityId: ${spiritualityId}`);
+
     try {
-      const sources = await Source.find({ relatedSystems: spiritualityId }); // Query the relatedSystems array
-      console.log('Sources found:', sources);
-      if (sources.length > 0) {
-        res.json(sources);
-      } else {
-        res.json({ message: 'No sources associated with this spirituality.' });
-      }
+      const sources = await Source.find({
+        spiritualities: spiritualityId,
+      }).populate('people');
+
+      res.json(sources);
     } catch (error) {
       console.error('Error fetching sources:', error);
-      res.status(500).json({ error: 'An error occurred while fetching sources.' });
-    }
-  });
-
-  router.get('/:id1/sources/:id2', async (req, res) => {
-    const { id1: spiritualityId, id2: sourceId } = req.params;
-    console.log("hello?")
-  
-    try {
-      // Find the specific source linked to the given spirituality
-      const source = await Source.findOne({
-        _id: sourceId,
-        relatedSystems: spiritualityId, // Ensure the source is linked to this spirituality
-      }).populate('relatedSystems tags person');
-  
-      if (source) {
-        console.log(source)
-        res.json(source); // Return the source if found
-      } else {
-        res.status(404).json({
-          message: 'Source not found for this spirituality.',
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching source:', error);
       res.status(500).json({
-        error: 'An error occurred while fetching the source.',
+        error: 'An error occurred while fetching sources.',
       });
     }
   });
 
-  router.get('/:id/people', async (req, res) => {
-    const spiritualityId = req.params.id; // Extract spirituality ID from the request parameters
-    console.log(`Fetching people for spiritualityId: ${spiritualityId}`);
+  // router.get('/:id1/sources/:id2', async (req, res) => {
+  //   const { id1: spiritualityId, id2: sourceId } = req.params;
+
+  //   try {
+  //     const spirituality = await Spirituality.findOne({
+  //       _id: spiritualityId,
+  //       relevantSources: sourceId,
+  //     });
+
+  //     if (!spirituality) {
+  //       return res.status(404).json({
+  //         message: 'Source not found for this spirituality.',
+  //       });
+  //     }
+
+  //     const source = await Source.findById(sourceId)
+  //       .populate('tags person');
+
+  //     if (!source) {
+  //       return res.status(404).json({
+  //         message: 'Source not found.',
+  //       });
+  //     }
+
+  //     res.json(source);
+  //   } catch (error) {
+  //     console.error('Error fetching source:', error);
+  //     res.status(500).json({
+  //       error: 'An error occurred while fetching the source.',
+  //     });
+  //   }
+  // });
+
+  // router.get('/:id1/sources/:id2', async (req, res) => {
+  //   const { id1: spiritualityId, id2: sourceId } = req.params;
+  //   console.log("hello?")
+  
+  //   try {
+  //     // Find the specific source linked to the given spirituality
+  //     const source = await Source.findOne({
+  //       _id: sourceId,
+  //       relatedSystems: spiritualityId, // Ensure the source is linked to this spirituality
+  //     }).populate('relatedSystems tags person');
+  
+  //     if (source) {
+  //       console.log(source)
+  //       res.json(source); // Return the source if found
+  //     } else {
+  //       res.status(404).json({
+  //         message: 'Source not found for this spirituality.',
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching source:', error);
+  //     res.status(500).json({
+  //       error: 'An error occurred while fetching the source.',
+  //     });
+  //   }
+  // });
+
+  // router.get('/:id/people', async (req, res) => {
+  //   const spiritualityId = req.params.id; // Extract spirituality ID from the request parameters
+  //   console.log(`Fetching people for spiritualityId: ${spiritualityId}`);
     
-    try {
-      // Query the Person model for entries where 'spirituality' includes the given spiritualityId
-      const people = await Person.find({ spirituality: spiritualityId }); 
+  //   try {
+  //     // Query the Person model for entries where 'spirituality' includes the given spiritualityId
+  //     const people = await Person.find({ spirituality: spiritualityId }); 
       
-      console.log('People found:', people);
-      if (people.length > 0) {
-        res.json(people);
-      } else {
-        res.json({ message: 'No people associated with this spirituality.' });
-      }
+  //     console.log('People found:', people);
+  //     if (people.length > 0) {
+  //       res.json(people);
+  //     } else {
+  //       res.json({ message: 'No people associated with this spirituality.' });
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching people:', error);
+  //     res.status(500).json({ error: 'An error occurred while fetching people.' });
+  //   }
+  // });
+
+  router.get('/:id/people', async (req, res) => {
+    const spiritualityId = req.params.id;
+
+    try {
+      const people = await Person.find({
+        spiritualities: spiritualityId,
+      });
+      // 6a781da105e150ec00cb596e
+      // db.sources.find({ spiritualities: ObjectId("6a781da105e150ec00cb596e") })
+
+      res.json(people);
     } catch (error) {
       console.error('Error fetching people:', error);
-      res.status(500).json({ error: 'An error occurred while fetching people.' });
+      res.status(500).json({
+        error: 'An error occurred while fetching people.',
+      });
     }
   });
   

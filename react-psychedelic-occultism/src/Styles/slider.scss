@@ -48,14 +48,14 @@
     display: flex;
   }
 
-  .books{
+  .slider-items{
     width: 100%;
     position: relative;
     display: flex;
     margin: 0 auto;
     justify-content: space-between;
     transition: .5s ease-in-out;
-    .book{
+    .slider-item{
       // width: 90%;
       flex: 1 0 auto; 
       width: calc(100% / 3);
@@ -81,7 +81,7 @@
   .slider-container {
     padding: 10px 20px;
 
-    .books {
+    .slider-items {
       width: 750px;
 
       .inverted {
@@ -100,7 +100,7 @@
         right: 20px;
       }
 
-      .book {
+      .slider-item {
         width: 250px;
       }
     }
@@ -109,7 +109,7 @@
 
 @media(max-width: 768px) {
   .slider-container {
-    .books {
+    .slider-items {
       width: 570px;
 
       .left-arrow__container {
@@ -120,7 +120,7 @@
         right: 0;
       }
 
-      .book {
+      .slider-item {
         width: 190px;
 
         p {
@@ -135,7 +135,7 @@
   .slider-container {
     padding: 10px;
 
-    .books {
+    .slider-items {
       width: 320px;
 
       .left-arrow__container,
@@ -158,7 +158,7 @@
         right: 5px;
       }
 
-      .book {
+      .slider-item {
         width: 160px;
 
         img {
@@ -176,10 +176,10 @@
 
 @media(max-width: 320px) {
   .slider-container {
-    .books {
+    .slider-items {
       width: 240px;
 
-      .book {
+      .slider-item {
         width: 120px;
 
         img {

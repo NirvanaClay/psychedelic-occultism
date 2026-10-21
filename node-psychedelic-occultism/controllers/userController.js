@@ -28,18 +28,23 @@ router.post('/register', async (req, res) => {
   await newUser.save();
 
   // Generate a token
-  const token = jwt.sign({ id: newUser._id, username: newUser.username }, JWT_SECRET, { expiresIn: '1h' });
+  // const token = jwt.sign({ id: newUser._id, username: newUser.username }, JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign(
+  {
+    userId: newUser._id,
+    username: newUser.username
+  },
+  JWT_SECRET,
+  { expiresIn: '1h' }
+);
 
   // Respond with the token and success message
   res.status(201).json({ message: 'User registered successfully', token });
 });
 
-
-
 // Login a user
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  console.log(username, password)
 
   if (!username || !password) {
     return res.status(400).json({ message: 'Username and password are required' });
@@ -56,8 +61,6 @@ router.post('/login', async (req, res) => {
 
   // Check the password
   const isPasswordValid = await bcrypt.compare(password, user.password);
-  console.log('Hashed password:', user.password);
-  console.log('Provided password:', password);
   console.log('Does the password match?', isPasswordValid);
 
   if (!isPasswordValid) {
@@ -71,8 +74,19 @@ router.post('/login', async (req, res) => {
 });
 
 // Protected route example
-router.get('/profile', protect, (req, res) => {
-  res.json({ message: `Welcome, ${req.user.username}` });
+router.get('/me', protect, async (req, res) => {
+    try {
+    const user = await User.findById(req.user.userId).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 module.exports = router;

@@ -5,31 +5,31 @@ const personData = [
     name: 'Aleister Crowley',
     image: '/images/crowley.jpg',
     bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    spiritualitySlug: ['occultism']
+    spiritualitySlugs: ['occultism']
   },
   {
     name: 'Terence McKenna',
     image: '/images/mckenna.jpg',
     bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    spiritualitySlug: ['psychedelics']
+    spiritualitySlugs: ['psychedelics']
   },
   {
     name: 'Timothy Leary',
     image: '/images/leary.webp',
     bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    spiritualitySlug: ['psychedelics']
+    spiritualitySlugs: ['psychedelics']
   },
   {
     name: 'Alan Watts',
     image: '/images/watts.webp',
     bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    spiritualitySlug: ['eastern-spirituality']
+    spiritualitySlugs: ['eastern-spirituality']
   },
   {
     name: 'John Lilly',
     image: '/images/lilly1.jpg',
     bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    spiritualitySlug: ['psychedelics']
+    spiritualitySlugs: ['psychedelics']
   }
 ];
 

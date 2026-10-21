@@ -1,38 +1,104 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
-import AddToWebButton from "./AddToWebButton"
+import AddToWebButton from './AddToWebButton';
+import QuoteSlider from './QuoteSlider';
+import Associations from './Associations';
 
-import '../Styles/source.css'
+import '../Styles/source.scss';
 
 const Source = () => {
-  const { id } = useParams();
+  const { id: sourceId } = useParams();
+
   const [source, setSource] = useState(null);
+  const [quotes, setQuotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/sources/${id}`)
-      .then(response => response.json())
-      .then((data) => {
-        console.log('Fetched Data:', data); // Log the data for debugging
-        setSource(data); // Update the state only after confirming data is correct
-      })
-      .catch(error => console.error('Error fetching summary:', error));
-  }, [id]);
+    if (!sourceId) return;
 
-  console.log("Source is:", source)
+    const fetchSourceDetails = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const [sourceResponse, quotesResponse] = await Promise.all([
+          fetch(`http://localhost:3001/api/sources/${sourceId}`),
+          fetch(`http://localhost:3001/api/sources/${sourceId}/quotes`),
+        ]);
+
+        if (!sourceResponse.ok || !quotesResponse.ok) {
+          throw new Error(
+            `Failed to fetch: ${
+              !sourceResponse.ok ? 'source data' : 'quotes'
+            }`
+          );
+        }
+
+        const sourceData = await sourceResponse.json();
+        const quotesData = await quotesResponse.json();
+
+        setSource(sourceData);
+        setQuotes(quotesData);
+      } catch (error) {
+        console.error('Error fetching source details:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSourceDetails();
+  }, [sourceId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   if (!source) {
-    return <div>Loading...</div>;
+    return <div>Source not found.</div>;
   }
 
   return (
     <div id='source'>
       <h1>{source.title}</h1>
-      <img src={source.image} />
-      <p>{source.description}</p>
-      <AddToWebButton refModel="Source" refId={source._id} />
-    </div> 
-  )
-}
+      <h2>
+        {source.people.map((person, index) => (
+          <React.Fragment key={person._id}>
+            {index > 0 && ', '}
+            <Link to={`/people/${person.slug}`}>
+              {person.name}
+            </Link>
+          </React.Fragment>
+        ))}
+      </h2>
 
-export default Source
+      {source.image && (
+        // <img src={source.image} alt={source.title} />
+        <img
+          className="source-image"
+          src={source.image}
+          alt={source.title}
+        />
+      )}
+
+      <p>{source.description}</p>
+
+      <h2>Quotes</h2>
+      <QuoteSlider quotes={quotes} />
+
+      <AddToWebButton refModel='Source' refId={source._id} />
+      <Associations
+        refModel="Source"
+        refId={source._id}
+      />
+    </div>
+  );
+};
+
+export default Source;

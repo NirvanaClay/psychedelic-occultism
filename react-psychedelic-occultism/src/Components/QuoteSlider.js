@@ -4,96 +4,114 @@ import '../Styles/quoteslider.css';
 
 import { fetchWebs, updateWeb } from '../api/webs.js';
 
-const QuoteSlider = () => {
+import AddToWebButton from './AddToWebButton';
+
+const QuoteSlider = ({ quotes = [] }) => {
   const [currentQuote, setCurrentQuote] = useState(null);
   const [quoteIndex, setQuoteIndex] = useState(0);
-  const [quotes, setQuotes] = useState([]);
-  const [quotesFetched, setQuotesFetched] = useState(false);
   const [fadeState, setFadeState] = useState('');
 
-  const [webs, setWebs] = useState([]);  // List of webs
-  const [showDropdown, setShowDropdown] = useState(false);  // Controls dropdown visibility
+  const [webs, setWebs] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const hasMounted = useRef(false);
-  const { id: spiritualityId } = useParams();
 
   useEffect(() => {
-    fetchWebs().then(setWebs); // Fetch webs on mount
+    fetchWebs()
+      .then(setWebs)
+      .catch((error) => {
+        console.error('Error fetching webs:', error);
+      });
   }, []);
 
+  useEffect(() => {
+    if (quotes.length === 0) {
+      setCurrentQuote(null);
+      setQuoteIndex(0);
+      return;
+    }
+
+    setQuoteIndex(0);
+    setCurrentQuote(quotes[0]);
+    hasMounted.current = true;
+  }, [quotes]);
+
   const handleAddToWeb = async (webId) => {
+    if (!currentQuote) return;
+
     try {
-      const selectedWeb = webs.find(web => web._id === webId);
+      const selectedWeb = webs.find((web) => web._id === webId);
+
       if (!selectedWeb) {
-        console.error("Web not found");
+        console.error('Web not found');
         return;
       }
 
-      // Update web with new quote
+      const quoteAlreadyAdded = selectedWeb.nodes.some(
+        (node) =>
+          node.refModel === 'Quote' &&
+          String(node.refId) === String(currentQuote._id)
+      );
+
+      if (quoteAlreadyAdded) {
+        alert(`This quote is already in ${selectedWeb.title}.`);
+        setShowDropdown(false);
+        return;
+      }
+
       const updatedWeb = {
         ...selectedWeb,
         nodes: [
           ...selectedWeb.nodes,
-          { refModel: "Quote", refId: currentQuote._id }
-        ]
+          {
+            refModel: 'Quote',
+            refId: currentQuote._id,
+          },
+        ],
       };
 
-      await updateWeb(webId, updatedWeb);
+      const savedWeb = await updateWeb(webId, updatedWeb);
+
+      setWebs((previousWebs) =>
+        previousWebs.map((web) =>
+          web._id === webId ? savedWeb || updatedWeb : web
+        )
+      );
 
       alert(`Quote added to ${selectedWeb.title} successfully!`);
-      setShowDropdown(false); // Hide dropdown after selection
+      setShowDropdown(false);
     } catch (error) {
-      console.error("Error adding quote to web:", error);
+      console.error('Error adding quote to web:', error);
     }
   };
 
-  useEffect(() => {
-    const fetchQuotes = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:3001/api/spirituality/${spiritualityId}/quotes`
-        );
-        if (!response.ok) throw new Error('Network response was not ok');
-
-        const data = await response.json();
-        setQuotes(data);
-        setQuotesFetched(true);
-      } catch (err) {
-        console.error('Error fetching quotes:', err);
-      }
-    };
-    fetchQuotes();
-  }, [spiritualityId]);
-
   const fetchRandomQuote = useCallback(() => {
+    if (quotes.length <= 1) return;
+
     const availableIndices = quotes
       .map((_, index) => index)
-      .filter(index => index !== quoteIndex);
+      .filter((index) => index !== quoteIndex);
 
-    const newIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+    const newIndex =
+      availableIndices[
+        Math.floor(Math.random() * availableIndices.length)
+      ];
+
     setQuoteIndex(newIndex);
   }, [quotes, quoteIndex]);
 
   useEffect(() => {
-    if (quotesFetched && quotes.length > 0) {
+    if (!hasMounted.current || !quotes[quoteIndex]) return;
+
+    setFadeState('fade fade-out');
+
+    const timeoutId = setTimeout(() => {
       setCurrentQuote(quotes[quoteIndex]);
-      setQuotesFetched(false);
-      hasMounted.current = true;
-    }
-  }, [quotesFetched, quoteIndex, quotes]);
+      setFadeState('fade fade-in');
+    }, 600);
 
-  useEffect(() => {
-    if (hasMounted.current) {
-      setFadeState('fade fade-out');
-      const timeoutId = setTimeout(() => {
-        setCurrentQuote(quotes[quoteIndex]);
-        setFadeState('fade fade-in');
-      }, 600);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [quoteIndex]);
-
-  const fetchNewQuote = () => fetchRandomQuote();
+    return () => clearTimeout(timeoutId);
+  }, [quoteIndex, quotes]);
 
   return (
     <div className="quote-container">
@@ -101,45 +119,74 @@ const QuoteSlider = () => {
         <>
           <div className="quote">
             <p className={fadeState}>{currentQuote.text}</p>
+
             {currentQuote.person?.name && (
               <p>{currentQuote.person.name}</p>
             )}
-          </div>
-          <div className="quote-icons">
-            {/* Web selection button */}
-            <div className="dropdown-container">
-              <img
-                src="/images/Web.png"
-                onClick={() => setShowDropdown(!showDropdown)}
-                className="dropdown-trigger"
-              />
 
-              {/* Dropdown list */}
+            {currentQuote.source?.title && (
+              <p>{currentQuote.source.title}</p>
+            )}
+          </div>
+
+          <div className="quote-icons">
+            <AddToWebButton
+              refModel="Quote"
+              refId={currentQuote._id}
+              className="dropdown-trigger"
+              title="Add quote to web"
+            >
+              <img src="/images/Web.png" alt="" />
+            </AddToWebButton>
+            {/* <div className="dropdown-container">
+              <button
+                type="button"
+                className="dropdown-trigger"
+                onClick={() => setShowDropdown((previous) => !previous)}
+                aria-label="Add quote to web"
+                title="Add quote to web"
+              >
+                <img src="/images/Web.png" alt="" />
+              </button>
+
               {showDropdown && (
                 <div className="dropdown-menu">
                   <p>Select a web:</p>
-                  <ul>
-                    {webs.map((web) => (
-                      <li key={web._id} onClick={() => handleAddToWeb(web._id)}>
-                        {web.title}
-                      </li>
-                    ))}
-                  </ul>
+
+                  {webs.length > 0 ? (
+                    <ul>
+                      {webs.map((web) => (
+                        <li key={web._id}>
+                          <button
+                            type="button"
+                            onClick={() => handleAddToWeb(web._id)}
+                          >
+                            {web.title}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No webs available.</p>
+                  )}
                 </div>
               )}
-            </div>
+            </div> */}
 
-            {/* New Quote Button */}
-            <i
-              onClick={fetchNewQuote}
-              className="fas fa-sync-alt refresh-icon"
-              aria-label="New Quote"
-              title="New Quote"
-            ></i>
+            <button
+              type="button"
+              onClick={fetchRandomQuote}
+              className="refresh-button"
+              aria-label="New quote"
+              title="New quote"
+              disabled={quotes.length <= 1}
+            >
+              <i className="fas fa-sync-alt refresh-icon"></i>
+            </button>
           </div>
         </>
       ) : (
-        <div>Loading quote...</div>
+        <div>No quotes available.</div>
       )}
     </div>
   );

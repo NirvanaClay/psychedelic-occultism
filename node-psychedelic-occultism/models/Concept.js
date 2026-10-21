@@ -14,6 +14,7 @@ const ConceptSchema = new Schema(
     },
     slug: {
       type: String,
+      // required: true,
       unique: true,
     },
     summary: {
@@ -30,7 +31,7 @@ const ConceptSchema = new Schema(
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      default: null,
     },
   },
   {

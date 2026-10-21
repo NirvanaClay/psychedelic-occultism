@@ -17,7 +17,7 @@ router.get('/all', async (req, res) => {
 
 // Get a single quote by ID
 router.get('/:id', async (req, res) => {
-  const quote = await Quote.findById(req.params.id).populate('person spirituality source');
+  const quote = await Quote.findById(req.params.id).populate('person spiritualities source');
   if (!quote) return res.status(404).json({ error: 'Quote not found' });
   res.json(quote);
 });

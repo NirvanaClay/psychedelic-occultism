@@ -1,12 +1,9 @@
-const mongoose = require('mongoose');
 const IdeaExploration = require('../models/IdeaExploration');
 const Spirituality = require('../models/Spirituality');
 const ideaExplorationData = require('../data/ideaExplorationData');
 
 async function seedIdeaExplorations() {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/psychedelic-occultism');
-
     await IdeaExploration.deleteMany({});
 
     const spiritualities = await Spirituality.find();
@@ -34,11 +31,8 @@ async function seedIdeaExplorations() {
     console.log('Idea explorations seeding complete.');
   } catch (err) {
     console.error('Error seeding idea explorations:', err);
-    await mongoose.disconnect();
-    process.exit(1);
+    throw error
   }
 }
-
-seedIdeaExplorations();
 
 module.exports = seedIdeaExplorations;

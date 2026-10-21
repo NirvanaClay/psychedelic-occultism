@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const TreeElement = require('../models/TreeElement'); // Adjust path to your model
 
 const seedData = [
@@ -36,12 +35,8 @@ const seedData = [
   { name: 'tav' }
 ];
 
-const seedDatabase = async () => {
+const seedTree = async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/psychedelic-occultism');
-
-    console.log('Connected to MongoDB');
-
     // Clear existing data
     await TreeElement.deleteMany({});
     console.log('Cleared existing TreeElements');
@@ -54,9 +49,8 @@ const seedDatabase = async () => {
     console.log('Database connection closed');
   } catch (error) {
     console.error('Error seeding database:', error);
-    mongoose.connection.close();
-    process.exit(1);
+    throw error
   }
 };
 
-seedDatabase();
+module.exports = seedTree
