@@ -1,9 +1,17 @@
-
 const express = require('express');
 const router = express.Router();
 
 const entityTypes = require('../config/entityTypes');
 const protect = require('../middleware/authMiddleware');
+
+router.get('/types', protect, (req, res) => {
+  const types = Object.entries(entityTypes).map(([value, config]) => ({
+    value,
+    label: config.label,
+  }));
+
+  res.json({ types });
+});
 
 router.get('/', protect, async (req, res) => {
   try {

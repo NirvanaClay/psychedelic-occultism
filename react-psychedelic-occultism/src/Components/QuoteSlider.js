@@ -16,13 +16,13 @@ const QuoteSlider = ({ quotes = [] }) => {
 
   const hasMounted = useRef(false);
 
-  useEffect(() => {
-    fetchWebs()
-      .then(setWebs)
-      .catch((error) => {
-        console.error('Error fetching webs:', error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetchWebs()
+  //     .then(setWebs)
+  //     .catch((error) => {
+  //       console.error('Error fetching webs:', error);
+  //     });
+  // }, []);
 
   useEffect(() => {
     if (quotes.length === 0) {

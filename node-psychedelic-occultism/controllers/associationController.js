@@ -4,6 +4,21 @@ const mongoose = require('mongoose');
 
 const Association = require('../models/Association');
 const protect = require('../middleware/authMiddleware');
+const entityTypes = require('../config/entityTypes');
+
+const validateEntity = async (entity) => {
+  if (
+    !entity ||
+    !entityTypes[entity.refModel] ||
+    !mongoose.isValidObjectId(entity.refId)
+  ) {
+    return false;
+  }
+
+  const Model = entityTypes[entity.refModel].model;
+
+  return await Model.exists({ _id: entity.refId });
+};
 
 // Get the logged-in user's associations for a specific entity
 router.get('/:refModel/:refId', protect, async (req, res) => {
@@ -34,7 +49,19 @@ router.get('/:refModel/:refId', protect, async (req, res) => {
     const populatedAssociations = await Promise.all(
       associations.map(async (association) => {
         const populateEntity = async (entity) => {
-          const Model = mongoose.model(entity.refModel);
+          // const Model = mongoose.model(entity.refModel);
+          const config = entityTypes[entity.refModel];
+
+          if (!config) {
+            return {
+              ...entity,
+              name: '',
+              slug: '',
+              image: '',
+            };
+          }
+
+          const Model = config.model;
 
           const document = await Model.findById(entity.refId)
             .select('name title slug image')
@@ -43,7 +70,7 @@ router.get('/:refModel/:refId', protect, async (req, res) => {
           return {
             refModel: entity.refModel,
             refId: entity.refId,
-            name: document?.name || document?.title || '',
+            name: document?.[config.displayField] || '',
             slug: document?.slug || '',
             image: document?.image || '',
           };
@@ -71,17 +98,16 @@ router.post('/', protect, async (req, res) => {
   try {
     const { subject, association } = req.body;
 
-    if (
-      !subject?.refModel ||
-      !association?.refModel ||
-      !mongoose.isValidObjectId(subject.refId) ||
-      !mongoose.isValidObjectId(association.refId)
-    ) {
+    const [validSubject, validAssociation] = await Promise.all([
+      validateEntity(subject),
+      validateEntity(association),
+    ]);
+
+    if (!validSubject || !validAssociation) {
       return res.status(400).json({
-        error: 'Invalid association data',
+        error: 'Invalid or nonexistent entity',
       });
     }
-
     // Prevent self-associations
     if (
       subject.refModel === association.refModel &&
@@ -144,6 +170,15 @@ router.delete('/:refModel/:refId', protect, async (req, res) => {
   try {
     const { refModel, refId } = req.params;
     const { associationRefModel, associationRefId } = req.body;
+
+    if (
+      !entityTypes[refModel] ||
+      !entityTypes[associationRefModel]
+    ) {
+      return res.status(400).json({
+        error: 'Invalid entity type',
+      });
+    }
 
     if (
       !mongoose.isValidObjectId(refId) ||

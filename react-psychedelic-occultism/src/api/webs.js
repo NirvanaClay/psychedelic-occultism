@@ -9,7 +9,7 @@ export const fetchWebs = async () => {
     return response.data;
   } catch (error) {
     console.error("Error fetching webs:", error);
-    return [];
+    throw error;
   }
 };
 

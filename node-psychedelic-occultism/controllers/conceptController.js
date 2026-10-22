@@ -22,10 +22,11 @@ router.get('/all', async (req, res) => {
 // Get a specific concept by slug
 router.get('/:slug', async (req, res) => {
   try {
-    const concept = await Concept.findOne({
-      slug: req.params.slug,
-    })
-      .populate('createdBy', 'username');
+  const concept = await Concept.findOne({
+    slug: req.params.slug,
+  })
+    .populate('createdBy', 'username')
+    .populate('ideaExplorations', 'title');
 
     if (!concept) {
       return res.status(404).json({
@@ -61,13 +62,20 @@ router.post('/', protect, async (req, res) => {
     const savedConcept = await newConcept.save();
 
     res.status(201).json(savedConcept);
-  } catch (error) {
-    console.error('Error creating concept:', error);
+    } catch (error) {
+      console.error('Error creating concept:', error);
 
-    res.status(400).json({
-      error: 'Failed to create concept',
-    });
-  }
+      res.status(400).json({
+        error: error.message,
+      });
+}
+  // } catch (error) {
+  //   console.error('Error creating concept:', error);
+
+  //   res.status(400).json({
+  //     error: 'Failed to create concept',
+  //   });
+  // }
 });
 
 

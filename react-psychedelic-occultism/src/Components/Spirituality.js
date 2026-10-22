@@ -4,6 +4,7 @@ import { useParams, useLocation, Link } from 'react-router-dom';
 
 import Slider from './Slider';
 import QuoteSlider from './QuoteSlider';
+import Associations from './Associations';
 
 import '../Styles/spirituality.css';
 import '../Styles/slider.css';
@@ -201,6 +202,10 @@ const Spirituality = () => {
         </ul>
       </div>
       <h2>Techniques</h2>
+      <Associations
+        refModel="Spirituality"
+        refId={spirituality._id}
+      />
     </div>
   );
 };

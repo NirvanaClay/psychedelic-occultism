@@ -1,15 +1,45 @@
-
 import { useEffect, useState } from 'react';
 import '../Styles/entitySearch.scss';
 
 const API_URL = 'http://localhost:3001/api';
 
 const EntitySearch = ({ onSelect, excludeEntity = null }) => {
+  const [entityTypes, setEntityTypes] = useState([]);
   const [query, setQuery] = useState('');
   const [type, setType] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchTypes = async () => {
+      try {
+        const response = await fetch(`${API_URL}/entity-search/types`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load entity types');
+        }
+
+        const data = await response.json();
+        setEntityTypes(data.types || []);
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Error loading entity types:', err);
+        }
+      }
+    };
+
+    fetchTypes();
+
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     const search = query.trim();
@@ -101,9 +131,11 @@ const EntitySearch = ({ onSelect, excludeEntity = null }) => {
           aria-label="Filter entity type"
         >
           <option value="">All types</option>
-          <option value="Concept">Concepts</option>
-          <option value="Source">Sources</option>
-          <option value="Person">People</option>
+          {entityTypes.map((entityType) => (
+            <option key={entityType.value} value={entityType.value}>
+              {entityType.label}
+            </option>
+          ))}
         </select>
       </div>
 

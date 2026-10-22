@@ -21,7 +21,9 @@ const Associations = ({ refModel, refId }) => {
   });
 
   const fetchAssociations = useCallback(async (signal) => {
-    if (!refModel || !refId) {
+    const token = localStorage.getItem('token');
+
+    if (!token || !refModel || !refId) {
       setAssociations([]);
       setLoading(false);
       return;
@@ -151,7 +153,15 @@ const Associations = ({ refModel, refId }) => {
 
         <button
           type="button"
-          onClick={() => setShowSearch((current) => !current)}
+          onClick={() => {
+            if (!localStorage.getItem('token')) {
+              setError('Please log in or create an account to add associations.');
+              return;
+            }
+
+            setError('');
+            setShowSearch((current) => !current);
+          }}
           disabled={saving || !refId}
         >
           {showSearch ? 'Cancel' : 'Add Association'}
@@ -178,7 +188,9 @@ const Associations = ({ refModel, refId }) => {
         <p>Loading associations...</p>
       ) : associations.length === 0 ? (
         <p className="associations__empty">
-          No associations yet.
+          {localStorage.getItem('token')
+            ? 'No associations yet.'
+            : 'Log in or create an account to build your own associations.'}
         </p>
       ) : (
         <ul className="associations__list">

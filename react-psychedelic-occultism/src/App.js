@@ -19,10 +19,12 @@ import Spirituality from './Components/Spirituality'
 import Techniques from './Components/TechniqueList'
 import Technique from './Components/Technique'
 import Summary from './Components/Summary'
-import SourceList from './Components/SourceList'
 import Source from './Components/Source'
-import PersonList from './Components/PersonList'
+import Sources from './Components/Sources'
+import People from './Components/People'
 import Person from './Components/Person'
+import Concept from './Components/Concept'
+import Concepts from './Components/Concepts'
 import IdeaExploration from './Components/IdeaExploration'
 import CreateSummary from './Components/CreateSummary'
 import CreateIdeaExploration from './Components/CreateIdeaExploration'
@@ -39,46 +41,52 @@ function App() {
 
   const { logout } = useAuth(user, setUser);
 
-const checkLogin = async () => {
-  const token = localStorage.getItem("token");
+  const checkLogin = async () => {
+    const token = localStorage.getItem("token");
 
-  if (!token) {
-    setUser(null);
-    return;
-  }
+    if (!token) {
+      setUser(null);
+      return;
+    }
 
-  try {
-    const res = await axios.get(
-      "http://localhost:3001/api/auth/me",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    try {
+      const res = await axios.get(
+        "http://localhost:3001/api/auth/me",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    setUser(res.data);
-  } catch (err) {
-    console.error("Error checking login:", err);
+      setUser(res.data);
+    } catch (err) {
+      console.error("Error checking login:", err);
 
-    localStorage.removeItem("token");
-    setUser(null);
-  }
-};
+      localStorage.removeItem("token");
+      setUser(null);
+    }
+  };
 
-useEffect(() => {
-  checkLogin();
-}, []);
+  useEffect(() => {
+    checkLogin();
+  }, []);
+  
+  useEffect(() => {
+    const handleAuthLogout = () => {
+      setUser(null);
+    };
 
-useEffect(() => {
-  console.log("user is:", user);
+    window.addEventListener('auth:logout', handleAuthLogout);
 
-  if (user) {
-    setIsLoggedIn(true);
-  } else {
-    setIsLoggedIn(false);
-  }
-}, [user, isLoggedIn]); // or just [user] if that ends up working in your app
+    return () => {
+      window.removeEventListener('auth:logout', handleAuthLogout);
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsLoggedIn(!!user);
+  }, [user]);
   
   return (
     <Router>
@@ -88,10 +96,12 @@ useEffect(() => {
         <Route path="/tree" element={<Tree />} />
         <Route path="/tree/:name" element={<TreeElement />} />
         <Route path="/psychedelics" element={<Psychedelics />} />
-        <Route path="/sources" element={<SourceList />} />
+        <Route path="/sources" element={<Sources />} />
         <Route path="/sources/:id" element={<Source />} />
-        <Route path="/people" element={<PersonList />} />
+        <Route path="/people" element={<People />} />
         <Route path="/people/:slug" element={<Person activeDropdownId={activeDropdownId} setActiveDropdownId={setActiveDropdownId} />} />
+        <Route path="/concept/:slug" element={<Concept />} />
+        <Route path="/concepts" element={<Concepts />} />
         <Route path="/experiences" element={<ExperienceList />} />
         <Route path="/experiences/:id" element={<Experience />} />
         <Route path="/techniques" element={<Techniques />} />

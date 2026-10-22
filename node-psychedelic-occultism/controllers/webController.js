@@ -15,14 +15,6 @@ router.get('/', protect, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-// router.get('/', protect, async (req, res) => {
-//   try {
-//     const webs = await Web.find().populate('createdBy', 'username');
-//     res.json(webs);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
 
 // ✅ GET: Retrieve a specific web by ID
 router.get('/:id', async (req, res) => {

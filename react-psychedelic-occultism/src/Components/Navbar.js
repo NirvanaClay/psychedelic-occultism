@@ -38,6 +38,7 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn, user, setUser }) => {
               <li><Link to="/spirituality">Spiritual Systems</Link></li>
               <li><Link to="/people">People</Link></li>
               <li><Link to="/sources">Sources</Link></li>
+              <li><Link to="/concepts">Concepts</Link></li>
               <li><Link to="/techniques">Techniques</Link></li>
               <li><Link to="/experiences">Experiences</Link></li>
               <li><Link to="/webs">Webs</Link></li>

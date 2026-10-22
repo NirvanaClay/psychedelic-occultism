@@ -15,16 +15,16 @@ const AddToWebButton = ({ refModel, refId, className, title, children }) => {
   const buttonRef = useRef(null);
   const containerRef = useRef(null);  // ← new ref for click-outside
 
-  useEffect(() => {
-    fetchWebs().then(setWebs);
-  }, []);
-
-  useEffect(() => {
-    fetchWebs().then((data) => {
-      console.log('Fetched webs:', data);
-      setWebs(data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   fetchWebs()
+  //     .then((data) => {
+  //       console.log('Fetched webs:', data);
+  //       setWebs(data);
+  //     })
+  //     .catch((err) => {
+  //       console.error('Error fetching webs:', err);
+  //     });
+  // }, []);
 
   // Listen for other dropdowns opening → close this one
   useEffect(() => {
@@ -48,8 +48,9 @@ const AddToWebButton = ({ refModel, refId, className, title, children }) => {
     const willBeOpen = !showDropdown;
 
     if (willBeOpen) {
-      // Position calculation (your original code)
+      // Position calculation
       if (!buttonRef.current) return;
+
       const buttonRect = buttonRef.current.getBoundingClientRect();
       const dropdownWidth = 180;
       const dropdownHeight = 120;
@@ -58,7 +59,9 @@ const AddToWebButton = ({ refModel, refId, className, title, children }) => {
       let left = buttonRect.width / 2 - dropdownWidth / 2;
 
       if (left < 10) left = 10;
-      if (left + dropdownWidth > window.innerWidth - 10) left = window.innerWidth - dropdownWidth - 10;
+      if (left + dropdownWidth > window.innerWidth - 10) {
+        left = window.innerWidth - dropdownWidth - 10;
+      }
       if (buttonRect.top + top + dropdownHeight > window.innerHeight) {
         top = -dropdownHeight - 10;
       }
@@ -74,6 +77,22 @@ const AddToWebButton = ({ refModel, refId, className, title, children }) => {
     setShowDropdown(willBeOpen);
     setErrorMessage('');
     setSuccessMessage('');
+
+    if (willBeOpen) {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        setErrorMessage('Please log in or create an account to add items to a Web.');
+        return;
+      }
+
+      fetchWebs()
+        .then(setWebs)
+        .catch((err) => {
+          console.error('Error fetching webs:', err);
+          setErrorMessage('Failed to load Webs.');
+        });
+    }
   };
 
   // Optional: close on click outside (bonus polish)

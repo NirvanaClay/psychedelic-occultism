@@ -1,0 +1,40 @@
+
+.concept {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+
+  &__header {
+    margin-bottom: 40px;
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+  }
+
+  &__summary {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  &__explorations,
+  &__associations {
+    margin-top: 30px;
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+  }
+
+  &__explorations {
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+  }
+}
